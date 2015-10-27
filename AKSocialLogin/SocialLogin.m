@@ -482,109 +482,109 @@
 //            }];}
 
 /***************************** LinkedInn Functions ***********************************/
--(void)loginWithLinkedInn:(linkedIn_completion_block)completion
-{
-    @try {
-        
-        NSLog(@"%s","sync pressed2");
-        [LISDKSessionManager createSessionWithAuth:[NSArray arrayWithObjects:LISDK_BASIC_PROFILE_PERMISSION, LISDK_EMAILADDRESS_PERMISSION, LISDK_W_SHARE_PERMISSION, nil]
-                                             state:@"some state"
-                            showGoToAppStoreDialog:YES
-                                      successBlock:^(NSString *returnState) {
-                                          
-                                          NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-                                          if(completion)
-                                          {
-                                            completion(returnState,nil,@"LinkedIn login success",1);
-                                          }
-                                          
-                                          
-                                      }
-                                        errorBlock:^(NSError *error) {
-                                            if(completion)
-                                            {
-                                                completion(nil,error,[error description],-1);
-                                            }
-                                            NSLog(@"%s %@","error called! ", [error description]);
-                                            //  _responseLabel.text = [error description];
-                                        }
-         ];
-        NSLog(@"%s","sync pressed3");
-        
-        return;
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Exception At: %s %d %s %s %@", __FILE__, __LINE__, __PRETTY_FUNCTION__, __FUNCTION__,exception);
-        if(completion)
-        {
-            completion(nil,nil,@"Exception error",-1);
-        }
-
-    }
-    @finally {
-    }
-}
-
--(void) postLinkedInnWithMessage:(NSDictionary *)msg withCompletionBlock:(linkedIn_completion_block) completion{
-    
-    LISDKSession *session = [[LISDKSessionManager sharedInstance] session];
-    NSLog(@"value=%@ isvalid=%@",[session value],[session isValid] ? @"YES" : @"NO");
-    NSMutableString *text = [[NSMutableString alloc] initWithString:[session.accessToken description]];
-    [text appendString:[NSString stringWithFormat:@",state=\"%@\"",@"some state"]];
-    NSLog(@"Response label text %@",text);
-    
-    NSDictionary *link=[[NSDictionary alloc] initWithObjects:@[@"anyone"] forKeys:@[@"code"] ];
-    
-    NSDictionary *imageDict =[NSDictionary dictionaryWithObjectsAndKeys:[msg valueForKey:@"title"],@"title",[msg valueForKey:@"link"],@"submitted-url",[msg valueForKey:@"description"],@"description",[msg valueForKey:@"image-url"],@"submitted-image-url", nil];
-    NSString *addCommentStr;
-
-        addCommentStr = [NSString stringWithFormat:@" %@ \n %@ \n %@",[msg valueForKey:@"title"],[msg valueForKey:@"description"],[msg valueForKey:@"link"]];
-    NSDictionary *post;
-    
-    post=[[NSDictionary alloc] initWithObjects:@[addCommentStr,imageDict,link] forKeys:@[@"comment",@"content",@"visibility"]];
-    
-    
-    BOOL prettyPrint=YES;
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:post
-                                                       options:(NSJSONWritingOptions)    (prettyPrint ? NSJSONWritingPrettyPrinted : 0)
-                                                         error:&error];
-    [[LISDKAPIHelper sharedInstance] apiRequest:@"https://api.linkedin.com/v1/people/~/shares?format=json"
-                                         method:@"POST"
-                                           body:jsonData
-                                        success:^(LISDKAPIResponse *response) {
-                                            NSLog(@"success called %@", response.data);
-                                            if(completion)
-                                            {
-                                                completion(response.data,nil,@"Posted",1);
-                                            }
-                                            
-                                        }
-                                          error:^(LISDKAPIError *apiError) {
-                                              
-                                              NSLog(@"error called %@", apiError.description);
-                                              dispatch_sync(dispatch_get_main_queue(), ^{
-                                                  LISDKAPIResponse *response = [apiError errorResponse];
-                                                  NSString *errorText;
-                                                  if (response) {
-                                                      if(completion)
-                                                      {
-                                                          completion(nil,nil,response.data,-1);
-                                                      }
-                                                      errorText = response.data;
-                                                  }
-                                                  else {
-                                                      if(completion)
-                                                      {
-                                                          completion(nil,nil,apiError.description,-1);
-                                                      }
-
-                                                      errorText = apiError.description;
-                                                  }
-                                              });
-                                          }];
-    
-}
+//-(void)loginWithLinkedInn:(linkedIn_completion_block)completion
+//{
+//    @try {
+//        
+//        NSLog(@"%s","sync pressed2");
+//        [LISDKSessionManager createSessionWithAuth:[NSArray arrayWithObjects:LISDK_BASIC_PROFILE_PERMISSION, LISDK_EMAILADDRESS_PERMISSION, LISDK_W_SHARE_PERMISSION, nil]
+//                                             state:@"some state"
+//                            showGoToAppStoreDialog:YES
+//                                      successBlock:^(NSString *returnState) {
+//                                          
+//                                          NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+//                                          if(completion)
+//                                          {
+//                                            completion(returnState,nil,@"LinkedIn login success",1);
+//                                          }
+//                                          
+//                                          
+//                                      }
+//                                        errorBlock:^(NSError *error) {
+//                                            if(completion)
+//                                            {
+//                                                completion(nil,error,[error description],-1);
+//                                            }
+//                                            NSLog(@"%s %@","error called! ", [error description]);
+//                                            //  _responseLabel.text = [error description];
+//                                        }
+//         ];
+//        NSLog(@"%s","sync pressed3");
+//        
+//        return;
+//    }
+//    @catch (NSException *exception) {
+//        NSLog(@"Exception At: %s %d %s %s %@", __FILE__, __LINE__, __PRETTY_FUNCTION__, __FUNCTION__,exception);
+//        if(completion)
+//        {
+//            completion(nil,nil,@"Exception error",-1);
+//        }
+//
+//    }
+//    @finally {
+//    }
+//}
+//
+//-(void) postLinkedInnWithMessage:(NSDictionary *)msg withCompletionBlock:(linkedIn_completion_block) completion{
+//    
+//    LISDKSession *session = [[LISDKSessionManager sharedInstance] session];
+//    NSLog(@"value=%@ isvalid=%@",[session value],[session isValid] ? @"YES" : @"NO");
+//    NSMutableString *text = [[NSMutableString alloc] initWithString:[session.accessToken description]];
+//    [text appendString:[NSString stringWithFormat:@",state=\"%@\"",@"some state"]];
+//    NSLog(@"Response label text %@",text);
+//    
+//    NSDictionary *link=[[NSDictionary alloc] initWithObjects:@[@"anyone"] forKeys:@[@"code"] ];
+//    
+//    NSDictionary *imageDict =[NSDictionary dictionaryWithObjectsAndKeys:[msg valueForKey:@"title"],@"title",[msg valueForKey:@"link"],@"submitted-url",[msg valueForKey:@"description"],@"description",[msg valueForKey:@"image-url"],@"submitted-image-url", nil];
+//    NSString *addCommentStr;
+//
+//        addCommentStr = [NSString stringWithFormat:@" %@ \n %@ \n %@",[msg valueForKey:@"title"],[msg valueForKey:@"description"],[msg valueForKey:@"link"]];
+//    NSDictionary *post;
+//    
+//    post=[[NSDictionary alloc] initWithObjects:@[addCommentStr,imageDict,link] forKeys:@[@"comment",@"content",@"visibility"]];
+//    
+//    
+//    BOOL prettyPrint=YES;
+//    NSError *error;
+//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:post
+//                                                       options:(NSJSONWritingOptions)    (prettyPrint ? NSJSONWritingPrettyPrinted : 0)
+//                                                         error:&error];
+//    [[LISDKAPIHelper sharedInstance] apiRequest:@"https://api.linkedin.com/v1/people/~/shares?format=json"
+//                                         method:@"POST"
+//                                           body:jsonData
+//                                        success:^(LISDKAPIResponse *response) {
+//                                            NSLog(@"success called %@", response.data);
+//                                            if(completion)
+//                                            {
+//                                                completion(response.data,nil,@"Posted",1);
+//                                            }
+//                                            
+//                                        }
+//                                          error:^(LISDKAPIError *apiError) {
+//                                              
+//                                              NSLog(@"error called %@", apiError.description);
+//                                              dispatch_sync(dispatch_get_main_queue(), ^{
+//                                                  LISDKAPIResponse *response = [apiError errorResponse];
+//                                                  NSString *errorText;
+//                                                  if (response) {
+//                                                      if(completion)
+//                                                      {
+//                                                          completion(nil,nil,response.data,-1);
+//                                                      }
+//                                                      errorText = response.data;
+//                                                  }
+//                                                  else {
+//                                                      if(completion)
+//                                                      {
+//                                                          completion(nil,nil,apiError.description,-1);
+//                                                      }
+//
+//                                                      errorText = apiError.description;
+//                                                  }
+//                                              });
+//                                          }];
+//    
+//}
 /***************************** Instagram Functions ***********************************/
 -(void)loginWithInstagram:(linkedIn_completion_block)completion withViewController:(UIViewController *)view
 {

@@ -9,4 +9,3 @@ target 'AKSocialLogin' do
     pod 'MBProgressHUD'
     pod 'FHSTwitterEngine'
 end
-
